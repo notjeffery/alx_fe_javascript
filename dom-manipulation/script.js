@@ -27,6 +27,31 @@ function populateCategoryDropdown() {
   });
 }
 
+function createAddQuoteForm() {
+  const container = document.createElement("div");
+
+  const quoteInput = document.createElement("input");
+  quoteInput.id = "newQuoteText";
+  quoteInput.type = "text";
+  quoteInput.placeholder = "Enter a new quote";
+
+  const categoryInput = document.createElement("input");
+  categoryInput.id = "newQuoteCategory";
+  categoryInput.type = "text";
+  categoryInput.placeholder = "Enter quote category";
+
+  const addButton = document.createElement("button");
+  addButton.textContent = "Add Quote";
+  addButton.addEventListener("click", addQuote);
+
+  container.appendChild(quoteInput);
+  container.appendChild(categoryInput);
+  container.appendChild(addButton);
+
+  document.body.appendChild(container);
+}
+
+
 // Show a random quote, optionally filtered by category
 function showRandomQuote() {
   const selectedCategory = categoryFilter.value;
@@ -82,5 +107,6 @@ categoryFilter.addEventListener("change", showRandomQuote);
 // On page load
 window.onload = () => {
   populateCategoryDropdown();
+  createAddQuoteForm();
   showRandomQuote();
 };
