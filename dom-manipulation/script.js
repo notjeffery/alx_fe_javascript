@@ -159,10 +159,50 @@ function importFromJsonFile(event) {
   fileReader.readAsText(event.target.files[0]);
 }
 
+async function syncWithServer() {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+    const serverData = await response.json();
+
+    // Simulate server quotes
+    const serverQuotes = serverData.slice(0, 5).map(post => ({
+      text: post.title,
+      category: "Synced"
+    }));
+
+    const localHash = JSON.stringify(quotes);
+    const serverHash = JSON.stringify(serverQuotes);
+
+    if (localHash !== serverHash) {
+      quotes = serverQuotes;
+      saveQuotes();
+      populateCategories();
+      filterQuotes();
+      showSyncNotification("Quotes updated from server. Local data was overwritten.");
+    }
+  } catch (error) {
+    console.error("Sync error:", error);
+    showSyncNotification("Failed to sync with server.");
+  }
+}
+
+function showSyncNotification(message) {
+  const notification = document.getElementById("syncNotification");
+  notification.innerText = message;
+  notification.style.display = "block";
+
+  setTimeout(() => {
+    notification.style.display = "none";
+  }, 5000);
+}
+
+
 // Initialize on load
 window.onload = () => {
   loadQuotes();
   populateCategories();
   createAddQuoteForm();
   restoreLastViewedQuote();
+  setInterval(syncWithServer, 10000);
+
 };
